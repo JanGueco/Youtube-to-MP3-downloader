@@ -23,6 +23,7 @@ window.setGeometry(int(width/2) - int(window_width/2), int(height/2) - int(windo
 window.setFixedSize(window_width,window_height)
 
 
+
 helloMsg = QLabel("<h1>Youtube to Mp3</h1>", parent=window)
 helloMsg.move(15, 15)
 
@@ -41,12 +42,13 @@ download_directory.setText("Select directory")
 download_directory.setReadOnly(True)
 
 directory_widget = QFileDialog(parent=window)
-#download_directory.setText(select_directory(directory))
 
 
 directory_button = QPushButton(window)
 directory_button.setText("change directory")
 directory_button.move(450,60)
+
+directory_select = QFileDialog(parent=window)
 
 label1 = QLabel(parent=window)
 label1.setText("Youtube videos list:")
@@ -75,7 +77,8 @@ directory_button.clicked.connect(lambda: change_directory(directory_widget))
 download_button.clicked.connect(lambda: get_youtube_links())
 
 def change_directory(parent):
-    directory = str(QFileDialog.getExistingDirectory(parent, caption="Select Directory"))
+    #directory = str(QFileDialog.getExistingDirectory(parent, caption="Select Directory"))
+    directory = str(directory_select.getExistingDirectory(caption="Select directory"))
     download_directory.setText(directory)
 
 def get_youtube_links():
@@ -103,11 +106,15 @@ def download_list(list_links):
     
 
 def download_mp3(link):
-    audio = YouTube(link).streams.get_audio_only()
+    #audio = YouTube(link).streams.get_lowest_resolution()
+    audio = YouTube(link).streams.get_by_resolution("720p") if YouTube(link).streams.get_by_resolution("720p") != None else YouTube(link).streams.get_highest_resolution()
     audio_download = audio.download(output_path=download_directory.text())
     base, ext = os.path.splitext(audio_download)
     new_file = base + '.mp3'
-    os.rename(audio_download, new_file)
+    try:
+        os.rename(audio_download, new_file)
+    except:
+        os.replace(audio_download, new_file)
 
 def check_directory(dir):
     if os.path.isdir(dir):
