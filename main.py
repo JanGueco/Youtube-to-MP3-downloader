@@ -1,6 +1,6 @@
 import sys, os, subprocess
 
-from PyQt6.QtWidgets import QApplication, QLabel, QWidget, QLineEdit, QFileDialog, QPushButton, QTextEdit, QProgressBar
+from PyQt6.QtWidgets import QApplication, QLabel, QWidget, QLineEdit, QFileDialog, QPushButton, QTextEdit, QProgressBar, QComboBox
 from PyQt6.QtCore import Qt
 
 
@@ -54,6 +54,17 @@ label1 = QLabel(parent=window)
 label1.setText("Youtube videos list:")
 label1.move(15,100)
 
+
+label2 = QLabel(parent=window)
+label2.setText("Preferred quality:")
+label2.move(350,100)
+
+qualities_list = ["1080p","720p","480p"]
+quality_selector = QComboBox(parent=window)
+quality_selector.addItems(qualities_list)
+quality_selector.move(450,98)
+
+
 links_list = QTextEdit(window)
 links_list.resize(500,300)
 links_list.move(15,130)
@@ -61,6 +72,8 @@ links_list.move(15,130)
 progress_bar = QProgressBar(parent=window)
 progress_bar.setGeometry(15, 450, 500,20)
 progress_bar.setValue(0)
+
+
 
 
 download_button = QPushButton(parent=window)
@@ -75,6 +88,7 @@ window.show()
 download_directory.textChanged.connect(lambda: check_directory(download_directory.text()))
 directory_button.clicked.connect(lambda: change_directory(directory_widget))
 download_button.clicked.connect(lambda: get_youtube_links())
+
 
 def change_directory(parent):
     #directory = str(QFileDialog.getExistingDirectory(parent, caption="Select Directory"))
@@ -107,7 +121,7 @@ def download_list(list_links):
 
 def download_mp3(link):
     #audio = YouTube(link).streams.get_lowest_resolution()
-    audio = YouTube(link).streams.get_by_resolution("720p") if YouTube(link).streams.get_by_resolution("720p") != None else YouTube(link).streams.get_highest_resolution()
+    audio = YouTube(link).streams.get_by_resolution(quality_selector.currentText()) if YouTube(link).streams.get_by_resolution(quality_selector.currentText()) != None else YouTube(link).streams.get_highest_resolution()
     audio_download = audio.download(output_path=download_directory.text())
     base, ext = os.path.splitext(audio_download)
     new_file = base + '.mp3'
