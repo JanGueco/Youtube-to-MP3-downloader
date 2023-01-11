@@ -23,7 +23,6 @@ window.setGeometry(int(width/2) - int(window_width/2), int(height/2) - int(windo
 window.setFixedSize(window_width,window_height)
 
 
-
 helloMsg = QLabel("<h1>Youtube to Mp3</h1>", parent=window)
 helloMsg.move(15, 15)
 
@@ -31,8 +30,6 @@ helloMsg.move(15, 15)
 label = QLabel(parent=window)
 label.setText("Download directory:")
 label.move(15,65)
-
-
 
 
 download_directory = QLineEdit(parent=window)
@@ -48,7 +45,9 @@ directory_button = QPushButton(window)
 directory_button.setText("change directory")
 directory_button.move(450,60)
 
+
 directory_select = QFileDialog(parent=window)
+
 
 label1 = QLabel(parent=window)
 label1.setText("Youtube videos list:")
@@ -58,6 +57,7 @@ label1.move(15,100)
 label2 = QLabel(parent=window)
 label2.setText("Preferred quality:")
 label2.move(350,100)
+
 
 qualities_list = ["1080p","720p","480p"]
 quality_selector = QComboBox(parent=window)
@@ -69,17 +69,20 @@ links_list = QTextEdit(window)
 links_list.resize(500,300)
 links_list.move(15,130)
 
+
 progress_bar = QProgressBar(parent=window)
 progress_bar.setGeometry(15, 450, 500,20)
 progress_bar.setValue(0)
-
-
 
 
 download_button = QPushButton(parent=window)
 download_button.setText("Convert and Download")
 download_button.setGeometry(400,515,150,30)
 download_button.setEnabled(False)
+
+credit_label = QLabel(parent=window)
+credit_label.setText("by: Jgueco")
+credit_label.move(15,580)
 
 
 
