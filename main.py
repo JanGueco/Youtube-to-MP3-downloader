@@ -1,6 +1,6 @@
-import sys, os, subprocess
+import sys, os, subprocess, re
 
-from PyQt6.QtWidgets import QApplication, QLabel, QWidget, QLineEdit, QFileDialog, QPushButton, QTextEdit, QProgressBar, QComboBox
+from PyQt6.QtWidgets import QApplication, QLabel, QWidget, QLineEdit, QFileDialog, QPushButton, QTextEdit, QProgressBar, QComboBox, QMessageBox
 from PyQt6.QtCore import Qt
 
 
@@ -80,6 +80,11 @@ download_button.setText("Convert and Download")
 download_button.setGeometry(400,515,150,30)
 download_button.setEnabled(False)
 
+message_box = QMessageBox(parent=window)
+message_box.setWindowTitle("Invalid link")
+message_box.setIcon(QMessageBox.Icon.Critical)
+
+
 credit_label = QLabel(parent=window)
 credit_label.setText("by: Jgueco")
 credit_label.move(15,580)
@@ -105,7 +110,14 @@ def get_youtube_links():
     progress_bar.setFormat("Downloading")
     progress_bar.setAlignment(Qt.AlignmentFlag.AlignCenter)
     for line in links.splitlines():
-        temp_list.append(line)
+        if check_valid_link(line):
+            temp_list.append(line)
+        else:
+            message_box.setText("Link: '" + line +"' is invalid.")
+            
+            x = message_box.exec()
+            links_list.setEnabled(True)
+            return None
     
     download_list(temp_list)
 
@@ -142,7 +154,12 @@ def check_directory(dir):
 def open_directory():
     subprocess.Popen(f'explorer {os.path.realpath(download_directory.text())}')
 
-
+def check_valid_link(link):
+    regex_obj = re.compile(r'(?:v=|\/)([0-9A-Za-z_-]{11}).*', flags=re.IGNORECASE)
+    if regex_obj.findall(link):
+        return True
+    else:
+        return False
 
 sys.exit(app.exec())
 
